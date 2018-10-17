@@ -18,6 +18,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// ClusterOptions stores information of cluster
+type ClusterOptions struct {
+	clusterName string
+	filePath    string
+}
+
 var (
 	clusterCommandHelpText = `
 The following commands helps managing cluster, i.e. adding, removing or editing
@@ -28,6 +34,7 @@ Examples:
  # Use the available cluster:
    $ kcm cluster use --name <cluster-name>
 `
+	clusterOptions = &ClusterOptions{}
 )
 
 // clusterCmd represents the cluster command
@@ -41,3 +48,20 @@ func init() {
 	rootCmd.AddCommand(clusterCmd)
 
 }
+
+// Validate verifies whether a cluster name or file path is provided or not, followed by
+// sub command. It returns nil and proceeds to execute the command if there is
+// no error and returns an error if it is missing.
+// func (c *ClusterOptions) Validate(cmd *cobra.Command, clusterNameVerify bool, filePathVerify bool) error {
+// 	if clusterNameVerify {
+// 		if len(c.clusterName) == 0 {
+// 			return errors.New("error: --clustername not specified")
+// 		}
+// 	}
+// 	if filePathVerify {
+// 		if len(c.filePath) == 0 {
+// 			return errors.New("error: --filepath not specified")
+// 		}
+// 	}
+// 	return nil
+// }
