@@ -16,6 +16,9 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
+	"os/user"
 
 	"github.com/spf13/cobra"
 )
@@ -31,20 +34,23 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+		// fmt.Println(args)
+		// absPath, _ := filepath.Abs("~/.kcm/clusterlist")
+
+		usr, err := user.Current()
+		if err != nil {
+			log.Fatal(err)
+		}
+		// fmt.Println(usr.HomeDir)
+		dat, err := ioutil.ReadFile(usr.HomeDir + "/.kcm/clusterlist")
+		if err != nil {
+			fmt.Println("Nothing Found here! :(")
+		}
+		fmt.Println(string(dat))
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(listCmd)
+	clusterCmd.AddCommand(listCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
