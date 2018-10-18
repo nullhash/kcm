@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"os/user"
 
 	"github.com/spf13/cobra"
@@ -34,23 +35,34 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// fmt.Println(args)
-		// absPath, _ := filepath.Abs("~/.kcm/clusterlist")
 
 		usr, err := user.Current()
 		if err != nil {
 			log.Fatal(err)
 		}
-		// fmt.Println(usr.HomeDir)
-		dat, err := ioutil.ReadFile(usr.HomeDir + "/.kcm/clusterlist")
+		// checkConfigExists(usr.HomeDir + "/.kcm/maya-staging/config")
+		files, err := ioutil.ReadDir(usr.HomeDir + "/.kcm/")
 		if err != nil {
 			fmt.Println("Nothing Found here! :(")
 		}
-		fmt.Println(string(dat))
+		for _, f := range files {
+			// fmt.Println(f.Name())
+			configPath := usr.HomeDir + "/.kcm/" + f.Name() + "/config"
+			if checkConfigExists(configPath) {
+				fmt.Println(f.Name())
+			}
+		}
 	},
 }
 
 func init() {
 	clusterCmd.AddCommand(listCmd)
 
+}
+
+func checkConfigExists(path string) bool {
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		return true
+	}
+	return false
 }

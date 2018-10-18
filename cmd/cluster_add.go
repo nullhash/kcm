@@ -49,45 +49,43 @@ var addCmd = &cobra.Command{
 		// stores the home dir of the user
 		// used to know the location of .kcm directory as .kcm directory
 		// is in home
+
+		// fmt.Println(args[0])
 		home, err := homedir.Dir()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		if checkFileOrDirectoryExists(home + "/.kcm/" + clusterOptions.clusterName) {
-			fmt.Println("error: clustername should be unique..")
+		if checkFileOrDirectoryExists(home + "/.kcm/" + args[0]) {
+			fmt.Println("Error: Cluster name " + args[0] + " already exists!")
 			os.Exit(1)
 		} else {
-			err = os.MkdirAll(home+"/.kcm/"+clusterOptions.clusterName, 0755)
+			err = os.MkdirAll(home+"/.kcm/"+args[0], 0755)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 		}
 
-		_, err = copyConfigFile(clusterOptions.filePath, home+"/.kcm/"+clusterOptions.clusterName+"/config")
+		_, err = copyConfigFile(clusterOptions.config, home+"/.kcm/"+args[0]+"/config")
 		if err != nil {
 			// To delete the clustername directory if something fails, so that again same cluster name can be retried.
-			errDeleteDirectory := deleteDirectory(home + "/.kcm/" + clusterOptions.clusterName)
+			errDeleteDirectory := deleteDirectory(home + "/.kcm/" + args[0])
 			if errDeleteDirectory != nil {
 				fmt.Println("error while deleting directory on fail. Try again with changing the cluster name or manually delete the directory with cluster name provided by you inside $HOME/.kcm/<cluster_name>")
 			}
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		fmt.Println("Cluster config created successfully..")
+		fmt.Println("Cluster config " + args[0] + ", created successfully!")
 	},
 }
 
 func init() {
 	clusterCmd.AddCommand(addCmd)
-
-	addCmd.Flags().StringVarP(&clusterOptions.clusterName, "clustername", "", clusterOptions.clusterName, "unique cluster name")
-	addCmd.MarkFlagRequired("clustername")
-
-	addCmd.Flags().StringVarP(&clusterOptions.filePath, "filepath", "", clusterOptions.filePath, "absolute path of cluster kubeconfig file")
-	addCmd.MarkFlagRequired("filepath")
+	addCmd.Flags().StringVarP(&clusterOptions.config, "config", "", clusterOptions.config, "Absolute path of cluster kubeconfig file")
+	addCmd.MarkFlagRequired("config")
 }
 
 // checkFileOrDirectoryExists to check directory or file is present on the given path.
@@ -101,7 +99,7 @@ func checkFileOrDirectoryExists(path string) bool {
 // copyConfigFile copies file content from sourc (src) to destination (dst) path.
 func copyConfigFile(src, dst string) (int64, error) {
 	if !checkFileOrDirectoryExists(src) {
-		return 0, errors.New("error: config file does not exist on given path")
+		return 0, errors.New("Error: config file does not exist on the given path")
 	}
 
 	source, err := os.Open(src)
