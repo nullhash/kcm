@@ -20,8 +20,8 @@ import (
 
 // ClusterOptions stores information of cluster
 type ClusterOptions struct {
-	clusterName string
-	filePath    string
+	// clusterName string
+	config string
 }
 
 var (
