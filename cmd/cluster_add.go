@@ -18,26 +18,16 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 
-	homedir "github.com/mitchellh/go-homedir"
+	"github.com/harshvkarn/kcm/util"
 	"github.com/spf13/cobra"
 )
 
 var (
 	clusterAddCommandHelpText = `This command is to add cluster config`
 )
-
-// func CToGoString(c []byte) string {
-// 	n := -1
-// 	for i, b := range c {
-// 		if b == 0 {
-// 			break
-// 		}
-// 		n = i
-// 	}
-// 	return string(c[:n+1])
-// }
 
 // addCmd represents the cluster add command
 var addCmd = &cobra.Command{
@@ -46,18 +36,17 @@ var addCmd = &cobra.Command{
 	Long:  clusterAddCommandHelpText,
 	Run: func(addCmd *cobra.Command, args []string) {
 
-		// stores the home dir of the user
-		// used to know the location of .kcm directory as .kcm directory
-		// is in home
-
-		// fmt.Println(args[0])
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
+		if len(args) == 0 {
+			fmt.Println("cluster name is missing..")
 			os.Exit(1)
 		}
 
-		if checkFileOrDirectoryExists(home + "/.kcm/" + args[0]) {
+		home, err := util.GetHomeDir()
+		if err != nil {
+			log.Fatal("Unable to get home dir, Please try again. error - " + err.Error())
+		}
+
+		if util.CheckFileOrDirectoryExists(home + "/.kcm/" + args[0]) {
 			fmt.Println("Error: Cluster name " + args[0] + " already exists!")
 			os.Exit(1)
 		} else {
@@ -88,17 +77,9 @@ func init() {
 	addCmd.MarkFlagRequired("config")
 }
 
-// checkFileOrDirectoryExists to check directory or file is present on the given path.
-func checkFileOrDirectoryExists(path string) bool {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return false
-	}
-	return true
-}
-
 // copyConfigFile copies file content from sourc (src) to destination (dst) path.
 func copyConfigFile(src, dst string) (int64, error) {
-	if !checkFileOrDirectoryExists(src) {
+	if !util.CheckFileOrDirectoryExists(src) {
 		return 0, errors.New("Error: config file does not exist on the given path")
 	}
 
