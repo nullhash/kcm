@@ -35,3 +35,6 @@ notifications:
 # .golangci.yml file at the top level of your repo.
 script:     # run a bunch of code checkers/linters in parallel
   - make build  # try to make binary
+  
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
