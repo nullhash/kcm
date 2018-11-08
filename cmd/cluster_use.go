@@ -47,10 +47,26 @@ var useCmd = &cobra.Command{
 			fmt.Println("cluster name does not exist..")
 			os.Exit(1)
 		}
-		err = os.Setenv("KUBECONFIG", home+"/.kcm/"+args[0]+"/config")
+		// err = os.Setenv("KUBECONFIG", home+"/.kcm/"+args[0]+"/config")
+		// if err != nil {
+		// 	log.Fatal("Unable to set environment (KUBECONFIG), Please try again. error - " + err.Error())
+		// }
+
+		// if util.CheckFileOrDirectoryExists(home + "/.kcm/config") {
+		// 	err = util.DeleteDirectory(home + "/.kcm/config")
+		// 	if err != nil {
+		// 		log.Fatal("Unable to create link, Please try again. error - " + err.Error())
+		// 		os.Exit(1)
+		// 	}
+		// }
+
+		_, err = createLink(home+"/.kcm/"+args[0]+"/config", home+"/.kcm/config")
 		if err != nil {
-			log.Fatal("Unable to set environment (KUBECONFIG), Please try again. error - " + err.Error())
+			log.Fatal("Unable to create link, Please try again. error - " + err.Error())
+			os.Exit(1)
 		}
+
+		fmt.Println("Using cluster " + args[0])
 	},
 }
 
@@ -66,4 +82,13 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// useCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func createLink(source string, destination string) (string, error) {
+	var cmd = "ln -sf " + source + " " + destination
+	out, err := util.ExeCmd(cmd)
+	if err != nil {
+		return "", err
+	}
+	return out, nil
 }

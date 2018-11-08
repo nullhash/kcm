@@ -2,6 +2,8 @@ package util
 
 import (
 	"os"
+	"os/exec"
+	"strings"
 
 	homedir "github.com/mitchellh/go-homedir"
 )
@@ -21,4 +23,31 @@ func CheckFileOrDirectoryExists(path string) bool {
 		return false
 	}
 	return true
+}
+
+// ExeCmd executes the given command
+func ExeCmd(cmd string) (string, error) {
+	// fmt.Println("command is ", cmd)
+	// splitting head => g++ parts => rest of the command
+	parts := strings.Fields(cmd)
+	head := parts[0]
+	parts = parts[1:len(parts)]
+
+	out, err := exec.Command(head, parts...).Output()
+	if err != nil {
+		return "", err
+		// fmt.Printf("%s", err)
+	}
+	// fmt.Printf("%s", out)
+
+	return string(out), nil
+}
+
+// DeleteDirectory is to delete directory in a given path.
+func DeleteDirectory(path string) error {
+	err := os.Remove(path)
+	if err != nil {
+		return err
+	}
+	return nil
 }
