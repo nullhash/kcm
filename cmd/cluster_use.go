@@ -33,40 +33,56 @@ var useCmd = &cobra.Command{
 	Short: "This command helps to change or use the cluster or config",
 	Long:  clusterUseCommandHelpText,
 	Run: func(cmd *cobra.Command, args []string) {
+
+		// To check argument is passed or missing
 		if len(args) == 0 {
-			fmt.Println("cluster name is missing..")
+			fmt.Println("cluster name is missing. Use - kcm cluster use <cluster-name>")
 			os.Exit(1)
 		}
 
-		home, err := util.GetHomeDir()
+		// clusterPath contains cluster directory path ( $home/.kcm/<cluster-name>)
+		clusterPath, err := util.GetClusterPath(args[0])
 		if err != nil {
-			log.Fatal("Unable to get home dir, Please try again. error - " + err.Error())
+			log.Fatal("Unable to get cluster directory path. Error - ", err.Error())
 		}
 
-		if !util.CheckFileOrDirectoryExists(home + "/.kcm/" + args[0]) {
-			fmt.Println("cluster name does not exist..")
+		// clusterConfigPath contains specific cluster config file path ( $home/.kcm/<cluster-name>/config)
+		clusterConfigPath, err := util.GetClusterConfigPath(args[0])
+		if err != nil {
+			log.Fatal("Unable to get cluster config file path. Error - ", err.Error())
+		}
+
+		// kubeconfigiPath contains path to the config file which is used by kubectl
+		kubeconfigPath, err := util.GetKubeconfigEnvValue()
+		if err != nil {
+			fmt.Println("Error - ", err.Error())
 			os.Exit(1)
 		}
-		// err = os.Setenv("KUBECONFIG", home+"/.kcm/"+args[0]+"/config")
+
+		// To check cluster directory exists or not
+		if !util.CheckFileOrDirectoryExists(clusterPath) {
+			fmt.Println("cluster name does not exist. Use - kcm cluster add <cluster-name>--config=<config-file-path>")
+			os.Exit(1)
+		}
+
+		// To check cluster directory contains config or not
+		if !util.CheckFileOrDirectoryExists(clusterConfigPath) {
+			log.Fatal("Unable to find config in cluster directory.")
+		}
+
+		// _, err = createLink(home+"/.kcm/"+args[0]+"/config", home+"/.kcm/config")
 		// if err != nil {
-		// 	log.Fatal("Unable to set environment (KUBECONFIG), Please try again. error - " + err.Error())
+		// 	log.Fatal("Unable to create link, Please try again. error - " + err.Error())
+		// 	os.Exit(1)
 		// }
 
-		// if util.CheckFileOrDirectoryExists(home + "/.kcm/config") {
-		// 	err = util.DeleteDirectory(home + "/.kcm/config")
-		// 	if err != nil {
-		// 		log.Fatal("Unable to create link, Please try again. error - " + err.Error())
-		// 		os.Exit(1)
-		// 	}
-		// }
-
-		_, err = createLink(home+"/.kcm/"+args[0]+"/config", home+"/.kcm/config")
+		// Copy config file from cluster directory to KUBECONFIG path so to be used
+		_, err = util.CopyConfigFile(clusterConfigPath, kubeconfigPath)
 		if err != nil {
-			log.Fatal("Unable to create link, Please try again. error - " + err.Error())
-			os.Exit(1)
+			log.Fatal("Unable to copy config, Please try again. error - " + err.Error())
 		}
-
 		fmt.Println("Using cluster " + args[0])
+
 	},
 }
 
@@ -84,11 +100,11 @@ func init() {
 	// useCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func createLink(source string, destination string) (string, error) {
-	var cmd = "ln -sf " + source + " " + destination
-	out, err := util.ExeCmd(cmd)
-	if err != nil {
-		return "", err
-	}
-	return out, nil
-}
+// func createLink(source string, destination string) (string, error) {
+// 	var cmd = "ln -sf " + source + " " + destination
+// 	out, err := util.ExeCmd(cmd)
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	return out, nil
+// }

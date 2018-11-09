@@ -1,6 +1,8 @@
 package util
 
 import (
+	"errors"
+	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -45,9 +47,59 @@ func ExeCmd(cmd string) (string, error) {
 
 // DeleteDirectory is to delete directory in a given path.
 func DeleteDirectory(path string) error {
-	err := os.Remove(path)
+	err := os.RemoveAll(path)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+// CopyConfigFile copies file content from sourc (src) to destination (dst) path.
+func CopyConfigFile(src, dst string) (int64, error) {
+	if !CheckFileOrDirectoryExists(src) {
+		return 0, errors.New("Error: config file does not exist on the given path")
+	}
+
+	source, err := os.Open(src)
+	if err != nil {
+		return 0, err
+	}
+	defer source.Close()
+
+	destination, err := os.Create(dst)
+	if err != nil {
+		return 0, err
+	}
+	defer destination.Close()
+	nBytes, err := io.Copy(destination, source)
+	return nBytes, err
+}
+
+// GetClusterPath returns specific cluster directory path
+func GetClusterPath(cluster string) (string, error) {
+	home, err := GetHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	return home + "/.kcm/" + cluster, nil
+}
+
+// GetClusterConfigPath returns specific cluster config file path
+func GetClusterConfigPath(cluster string) (string, error) {
+	home, err := GetHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	return home + "/.kcm/" + cluster + "/config", nil
+}
+
+// GetKubeconfigEnvValue returns the kubeconfig environment value
+func GetKubeconfigEnvValue() (string, error) {
+	kubeconfigValue := os.Getenv("KUBECONFIG")
+	if kubeconfigValue == "" {
+		return "", errors.New("KUBECONFIG environment variable not set")
+	}
+	return kubeconfigValue, nil
 }
