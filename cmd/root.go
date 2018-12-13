@@ -28,9 +28,8 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "kcm",
-	Short: "Kube Config Manager, lets you manage multiple cluster",
-	Long: `kcm, Kube Config Manager, is a CLI tool that helps user manage multiple cluster by mapping the kubectl
-to the desired config file`,
+	Short: "Kube Config Manager, Lets you manage multiple kubeconfig",
+	Long:  `kcm, Kube Config Manager, is a CLI tool that helps user manage multiple kubeconfig`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
@@ -56,6 +55,12 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.AddCommand(
+		config,
+		context,
+		bootstrap,
+		version,
+	)
 }
 
 // initConfig reads in config file and ENV variables if set.

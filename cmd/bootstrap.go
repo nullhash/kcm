@@ -1,5 +1,3 @@
-// Copyright © 2018 NAME HERE <EMAIL ADDRESS>
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,18 +13,16 @@
 package cmd
 
 import (
-	"fmt"
-
+	b "github.com/nullhash/kcm/kcmmanager/bootstrap"
 	"github.com/spf13/cobra"
 )
 
-// version represents the version command
-var version = &cobra.Command{
-	Use:   "version",
-	Short: "Print the kcm client version information",
-	Long:  "Print the client version information for the current context",
-
+// bootstrap represents the cluster add command
+var bootstrap = &cobra.Command{
+	Use:   "bootstrap",
+	Short: "This command is to add cluster config",
+	Long:  clusterAddCommandHelpText,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("kcm version v0.1")
+		b.Bootstrap()
 	},
 }
