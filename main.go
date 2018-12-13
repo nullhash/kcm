@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/harshvkarn/kcm/cmd"
+import "github.com/nullhash/kcm/cmd"
 
 func main() {
 	cmd.Execute()
