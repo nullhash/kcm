@@ -2,7 +2,9 @@ package util
 
 import (
 	"errors"
+	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -102,4 +104,15 @@ func GetKubeconfigEnvValue() (string, error) {
 		return "", errors.New("KUBECONFIG environment variable not set")
 	}
 	return kubeconfigValue, nil
+}
+
+//TerminalWithKubeconfig exports the KUBECONFIG in the new terminal
+func TerminalWithKubeconfig(path string) {
+	os.Setenv("KUBECONFIG", path)
+	fmt.Printf("test")
+	out, err := exec.Command("gnome-terminal").Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Out %s\n", out)
 }

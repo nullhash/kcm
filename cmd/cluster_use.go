@@ -53,7 +53,7 @@ var useCmd = &cobra.Command{
 		}
 
 		// kubeconfigiPath contains path to the config file which is used by kubectl
-		kubeconfigPath, err := util.GetKubeconfigEnvValue()
+		// kubeconfigPath, err := util.GetKubeconfigEnvValue()
 		if err != nil {
 			fmt.Println("Error - ", err.Error())
 			os.Exit(1)
@@ -76,11 +76,12 @@ var useCmd = &cobra.Command{
 		// 	os.Exit(1)
 		// }
 
+		util.TerminalWithKubeconfig(clusterConfigPath)
 		// Copy config file from cluster directory to KUBECONFIG path so to be used
-		_, err = util.CopyConfigFile(clusterConfigPath, kubeconfigPath)
-		if err != nil {
-			log.Fatal("Unable to copy config, Please try again. error - " + err.Error())
-		}
+		// _, err = util.CopyConfigFile(clusterConfigPath, kubeconfigPath)
+		// if err != nil {
+		// 	log.Fatal("Unable to copy config, Please try again. error - " + err.Error())
+		// }
 		fmt.Println("Using cluster " + args[0])
 
 	},
