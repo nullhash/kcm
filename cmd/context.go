@@ -10,15 +10,16 @@ var (
 	contextOptions = &ContextOptions{}
 )
 
-var context = &cobra.Command{
+var contextCommand = &cobra.Command{
 	Use:   "context",
 	Short: "A brief description of your command",
 	Long:  "",
 }
 
 func init() {
-	context.AddCommand(
+	contextCommand.AddCommand(
 		listContext,
+		useContext,
 		deleteContext,
 		resetContext,
 	)

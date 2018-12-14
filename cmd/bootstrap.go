@@ -13,16 +13,16 @@
 package cmd
 
 import (
-	b "github.com/nullhash/kcm/kcmmanager/bootstrap"
+	"github.com/nullhash/kcm/kcmmanager/bootstrap"
 	"github.com/spf13/cobra"
 )
 
 // bootstrap represents the cluster add command
-var bootstrap = &cobra.Command{
+var bootstrapCommand = &cobra.Command{
 	Use:   "bootstrap",
 	Short: "This command is to add cluster config",
 	Long:  clusterAddCommandHelpText,
 	Run: func(cmd *cobra.Command, args []string) {
-		b.Bootstrap()
+		bootstrap.Bootstrap()
 	},
 }

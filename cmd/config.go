@@ -4,22 +4,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type ConfigOptions struct {
-	configPath string
-}
-
-var (
-	configOptions = &ConfigOptions{}
-)
-
-var config = &cobra.Command{
+var configCommand = &cobra.Command{
 	Use:   "config",
 	Short: "A brief description of your command",
 	Long:  "",
 }
 
 func init() {
-	config.AddCommand(
+	configCommand.AddCommand(
 		listConfig,
 		deleteConfig,
 		resetConfig,

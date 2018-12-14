@@ -25,7 +25,7 @@ func captureStdout(f func()) string {
 }
 
 func TestVersion(t *testing.T) {
-	result := captureStdout(func() { versionCmd.Run(nil, nil) })
+	result := captureStdout(func() { versionCommand.Run(nil, nil) })
 	if !strings.HasPrefix(result, "kcm version v") {
 		t.Error("Expected version string, got ", result)
 	}

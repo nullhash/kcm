@@ -17,21 +17,25 @@ import (
 	"log"
 	"os"
 
-	"github.com/nullhash/kcm/kcmmanager/kcmconfig"
+	"github.com/nullhash/kcm/kcmmanager/config"
+)
+
+var (
+	home string
 )
 
 func setupKCMHome() {
-	if _, err := os.Stat("/home/shovan/.kcm"); os.IsNotExist(err) {
+	if _, err := os.Stat(home + "/.kcm"); os.IsNotExist(err) {
 		log.Println("kcm home not available creating kcm home")
-		os.Mkdir("/home/shovan/.kcm", os.ModePerm)
+		os.Mkdir(home+"/.kcm", os.ModePerm)
 		return
 	}
 	log.Println("kcm home available skip creating kcm home")
 }
 
 func setupKCMConfig() {
-	if _, err := os.Stat("/home/shovan/.kcm/config"); os.IsNotExist(err) {
-		if file, err := os.Create("/home/shovan/.kcm/config"); err == nil {
+	if _, err := os.Stat(home + "/.kcm/config"); os.IsNotExist(err) {
+		if file, err := os.Create(home + "/.kcm/config"); err == nil {
 			log.Println("kcm config not available creating kcm config")
 			defer file.Close()
 			return
@@ -44,8 +48,13 @@ func setupKCMConfig() {
 }
 
 func Bootstrap() {
+	home = os.Getenv("HOME")
+	if home == "" {
+		log.Println("error while reading environment variable")
+		return
+	}
 	setupKCMHome()
 	setupKCMConfig()
 	defaultKubeConfigPath := "/home/shovan/.kube/config"
-	kcmconfig.LoadConfig(defaultKubeConfigPath)
+	config.LoadConfig(defaultKubeConfigPath)
 }

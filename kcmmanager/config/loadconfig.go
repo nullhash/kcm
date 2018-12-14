@@ -1,4 +1,4 @@
-package kcmconfig
+package config
 
 import (
 	"io/ioutil"
@@ -10,8 +10,9 @@ import (
 )
 
 func LoadConfig(filePath string) {
-	if filePath == "" {
-		log.Println("no file path provided")
+	home := os.Getenv("HOME")
+	if home == "" {
+		log.Println("error while reading environment variable")
 		return
 	}
 	var kubeConfig types.KubeConfig
@@ -26,7 +27,7 @@ func LoadConfig(filePath string) {
 		return
 	}
 	for _, context := range kubeConfig.Contexts {
-		dirName := "/home/shovan/.kcm/" + context.Name
+		dirName := home + "/.kcm/" + context.Name
 		tmpConfig := kubeConfig
 		if _, err := os.Stat(dirName); os.IsNotExist(err) {
 			os.Mkdir(dirName, os.ModePerm)

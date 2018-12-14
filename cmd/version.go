@@ -21,7 +21,7 @@ import (
 )
 
 // version represents the version command
-var version = &cobra.Command{
+var versionCommand = &cobra.Command{
 	Use:   "version",
 	Short: "Print the kcm client version information",
 	Long:  "Print the client version information for the current context",
