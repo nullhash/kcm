@@ -55,6 +55,6 @@ func Bootstrap() {
 	}
 	setupKCMHome()
 	setupKCMConfig()
-	defaultKubeConfigPath := "/home/shovan/.kube/config"
+	defaultKubeConfigPath := home + "/.kube/config"
 	config.LoadConfig(defaultKubeConfigPath)
 }

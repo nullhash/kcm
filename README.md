@@ -11,4 +11,4 @@ Setting up development environment is pretty easy, you should have Go version 1.
 ```
 $ go get github.com/spf13/cobra/cobra
 ```
-Clone the `kcm` inside `$GOPATH/src/github.com/harshvkarn/kcm` and start contributing.
+Clone the `kcm` inside `$GOPATH/src/github.com/nullhash/kcm` and start contributing.
