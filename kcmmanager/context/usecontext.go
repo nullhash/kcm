@@ -39,7 +39,8 @@ func UseContext(context string) {
 	for _, dir := range dirs {
 		if dir.IsDir() && dir.Name() == context {
 			os.Setenv("KUBECONFIG", home+"/.kcm/"+dir.Name()+"/config")
-			util.ExecuteSingleCommand("gnome-terminal")
+			args := []string{"--tab", "--active", "--title=" + context}
+			util.ExecuteSingleCommand("gnome-terminal", args...)
 		}
 	}
 
