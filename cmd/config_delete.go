@@ -14,7 +14,7 @@ limitations under the License.
 package cmd
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/spf13/cobra"
 )
@@ -24,6 +24,6 @@ var deleteConfig = &cobra.Command{
 	Short: "This command is for kubeconfig from kcm",
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("This is delete config")
+		fmt.Println("This feature is expected to be in the next release of KCM!")
 	},
 }

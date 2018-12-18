@@ -1,6 +1,6 @@
 # Kube Config Manager
 
-[![Build Status](https://travis-ci.com/harshvkarn/kcm.svg?branch=master)](https://travis-ci.com/harshvkarn/kcm)
+[![Build Status](https://travis-ci.org/nullhash/kcm.svg?branch=master)](https://travis-ci.org/nullhash/kcm)
 [![BCH compliance](https://bettercodehub.com/edge/badge/nullhash/kcm?branch=master)](https://bettercodehub.com/)
 [![codecov](https://codecov.io/gh/harshvkarn/kcm/branch/master/graph/badge.svg)](https://codecov.io/gh/harshvkarn/kcm)
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
