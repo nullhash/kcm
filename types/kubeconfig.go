@@ -54,3 +54,16 @@ type KubeConfig struct {
 		} `yaml:"user"`
 	} `yaml:"users"`
 }
+
+type KcmConfig struct {
+	Contexts    []KcmContext `yaml:"contexts"`     // Contexts ...
+	ConfigFiles []string     `yaml:"config-files"` // ConfigFiles ...
+}
+
+type KcmContext struct {
+	Name           string `yaml:"name"`
+	ClusterName    string `yaml:"cluster-name"`
+	ContextName    string `yaml:"context-name"`
+	ConfigFilePath string `yaml:"config-file-path"`
+	KcmContextPath string `yaml:"kcm-context-path"`
+}

@@ -24,27 +24,19 @@ var (
 	home string
 )
 
-func setupKCMHome() {
-	if _, err := os.Stat(home + "/.kcm"); os.IsNotExist(err) {
-		log.Println("kcm home not available creating kcm home")
-		os.Mkdir(home+"/.kcm", os.ModePerm)
-		return
+func deleteHomeIfPresent() {
+	if _, err := os.Stat(home + "/.kcm"); !os.IsNotExist(err) {
+		os.RemoveAll(home + "/.kcm")
 	}
-	log.Println("kcm home available skip creating kcm home")
+}
+func setupKCMHome() {
+	os.Mkdir(home+"/.kcm", os.ModePerm)
 }
 
 func setupKCMConfig() {
-	if _, err := os.Stat(home + "/.kcm/config"); os.IsNotExist(err) {
-		if file, err := os.Create(home + "/.kcm/config"); err == nil {
-			log.Println("kcm config not available creating kcm config")
-			defer file.Close()
-			return
-		}
-		log.Fatal("unable to create kcm config")
-		return
+	if file, err := os.Create(home + "/.kcm/config"); err == nil {
+		defer file.Close()
 	}
-	log.Println("kcm config available skip creating kcm config")
-
 }
 
 func Bootstrap() {
@@ -53,6 +45,7 @@ func Bootstrap() {
 		log.Println("error while reading environment variable")
 		return
 	}
+	deleteHomeIfPresent()
 	setupKCMHome()
 	setupKCMConfig()
 	defaultKubeConfigPath := home + "/.kube/config"
